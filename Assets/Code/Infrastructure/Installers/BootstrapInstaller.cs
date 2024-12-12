@@ -1,4 +1,6 @@
 using Code.Gameplay.Cameras.Provider;
+using Code.Gameplay.Features.Grid.Factory;
+using Code.Gameplay.Features.Level.Services;
 using Code.Gameplay.StaticData;
 using Code.Infrastructure.AssetManagement;
 using Code.Infrastructure.Loading;
@@ -6,13 +8,15 @@ using Zenject;
 
 namespace Code.Infrastructure.Installers
 {
-    public class BootstrapInstaller : MonoInstaller, ICoroutineRunner
+    public class BootstrapInstaller : MonoInstaller, ICoroutineRunner, IInitializable
     {
         public override void InstallBindings()
         {
             BindCamera();
             BindInfrastructure();
             BindCommon();
+            BindGrid();
+            BindLevel();
         }
 
         private void BindCamera()
@@ -30,6 +34,22 @@ namespace Code.Infrastructure.Installers
             Container.Bind<IAssetProvider>().To<AssetProvider>().AsSingle();
             Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
             Container.Bind<IStaticDataService>().To<StaticDataService>().AsSingle();
+        }
+
+        private void BindGrid()
+        {
+            Container.Bind<IGridFactory>().To<GridFactory>().AsSingle();
+        }
+
+        private void BindLevel()
+        {
+            Container.Bind<ILevelService>().To<LevelService>().AsSingle();
+        }
+
+        public void Initialize()
+        {
+            Container.Resolve<IStaticDataService>().LoadAll();
+            Container.Resolve<ISceneLoader>().LoadScene(Scenes.Game);
         }
     }
 }

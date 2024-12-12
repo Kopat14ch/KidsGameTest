@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47e7084938794397a7533e6fd45057fe, type: 3}
+  m_Name: GridElementK
+  m_EditorClassIdentifier: 
+  BackgroundColor: {r: 0.40792987, g: 0.8396226, b: 0.6165814, a: 1}
+  Sprite: {fileID: -1127063002332224934, guid: eed2bd6b581cdd0499833997d887c76e, type: 3}
+  Name: K
+  RotateValue: 0
+  Scale: {x: 0.4, y: 0.4, z: 0.4}
+  ScaleIcon: {x: 1, y: 1, z: 1}

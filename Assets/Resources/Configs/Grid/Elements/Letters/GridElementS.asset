@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47e7084938794397a7533e6fd45057fe, type: 3}
+  m_Name: GridElementS
+  m_EditorClassIdentifier: 
+  BackgroundColor: {r: 0.5436195, g: 0.23028658, b: 0.6509434, a: 1}
+  Sprite: {fileID: 8083504644574312765, guid: 612a10ebe7ec65149acfa49c81f7adc9, type: 3}
+  Name: S
+  RotateValue: 0
+  Scale: {x: 0.4, y: 0.4, z: 0.4}
+  ScaleIcon: {x: 1, y: 1, z: 1}
