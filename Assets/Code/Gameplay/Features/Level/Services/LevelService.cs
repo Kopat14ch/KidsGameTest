@@ -1,27 +1,48 @@
-﻿using Code.Gameplay.Features.Level.Configs;
+﻿using System;
+using Code.Gameplay.Features.Level.Configs;
 using Code.Gameplay.StaticData;
 
 namespace Code.Gameplay.Features.Level.Services
 {
-    public class LevelService : ILevelService
+    public class LevelService : ILevelService, ILevelServiceEvent
     {
         private readonly LevelConfig[] _configs;
         
-        private int _currentLevel = 0;
+        private int _currentLevel;
+        
+        public event Action LevelChanged;
+        public event Action Restarted;
+        
+        public bool LevelStarted { get; private set; }
         
         public LevelService(IStaticDataService staticDataService)
         {
             _configs = staticDataService.GetLevelConfigs();
         }
 
-        public LevelConfig NextLevel()
-        {
-            _currentLevel = ++_currentLevel % _configs.Length;
+        public void NextLevel()
+        { 
+            _currentLevel++;
 
-            return GetCurrentConfig();
+            if (_currentLevel == _configs.Length)
+                throw new Exception("Level outside range.");
+            
+            LevelChanged?.Invoke();
         }
+
+        public void Restart()
+        {
+            _currentLevel = 0;
+            Restarted?.Invoke();
+        }
+        
+        public void StartLevel() => 
+            LevelStarted = true;
         
         public LevelConfig GetCurrentConfig() => 
             _configs[_currentLevel];
+        
+        public bool CanNextLevel() => 
+            _currentLevel + 1 < _configs.Length;
     }
 }

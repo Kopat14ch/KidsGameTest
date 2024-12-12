@@ -14,8 +14,7 @@ namespace Code.Gameplay.Features.Grid.Behaviours
             int raw = size.x;
             int column = size.y;
             
-            _spriteRenderer.size = new Vector2(raw * (sizeElement + cellGap), column * (sizeElement + cellGap)) + _offset;
-            
+            _spriteRenderer.size = new Vector2(column * (sizeElement + cellGap), raw * (sizeElement + cellGap)) + _offset;
         }
     }
 }

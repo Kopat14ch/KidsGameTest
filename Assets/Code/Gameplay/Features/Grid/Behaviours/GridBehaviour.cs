@@ -18,7 +18,7 @@ namespace Code.Gameplay.Features.Grid.Behaviours
         [SerializeField] private UnityEngine.Grid _grid;
 
         private List<GridElementConfig> _elementConfigs;
-        private List<GridElementConfig> _currentLevelElementConfigs;
+        private List<GridElementBehaviour> _currentLevelElementConfigs;
         private GridViewBehaviour _viewBehaviour;
         private Vector2Int _currentSize;
         private LevelConfig _currentLevelConfig;
@@ -27,10 +27,13 @@ namespace Code.Gameplay.Features.Grid.Behaviours
         private IGridFactory _factory;
         private ILevelService _levelService;
         private IStaticDataService _staticDataService;
+        private ILevelServiceEvent _levelServiceEvent;
 
         [Inject]
-        public void Construct(IGridFactory factory, ILevelService levelService, IStaticDataService staticDataService)
+        public void Construct(IGridFactory factory, ILevelService levelService, IStaticDataService staticDataService,
+            ILevelServiceEvent levelServiceEvent)
         {
+            _levelServiceEvent = levelServiceEvent;
             _staticDataService = staticDataService;
             _levelService = levelService;
             _factory = factory;
@@ -41,15 +44,25 @@ namespace Code.Gameplay.Features.Grid.Behaviours
         private void Awake()
         {
             _viewBehaviour = GetComponent<GridViewBehaviour>();
-            _currentLevelElementConfigs = new List<GridElementConfig>();
+            _currentLevelElementConfigs = new List<GridElementBehaviour>();
         }
 
-        public List<GridElementConfig> CreateGrid()
+        private void OnEnable()
+        {
+            _levelServiceEvent.Restarted += Restart;
+        }
+
+        private void OnDisable()
+        {
+            _levelServiceEvent.Restarted -= Restart;
+        }
+
+        public List<GridElementBehaviour> CreateGrid()
         {
             if (_currentLevelElementConfigs.Any())
                 _currentLevelElementConfigs.Clear();
             
-            _currentLevelElementConfigs = new List<GridElementConfig>();
+            _currentLevelElementConfigs = new List<GridElementBehaviour>();
             _currentLevelConfig = _levelService.GetCurrentConfig();
             _currentSize = _currentLevelConfig.GridConfig.Size;
             _currentCellSize = _currentLevelConfig.GridConfig.CellSize;
@@ -70,8 +83,8 @@ namespace Code.Gameplay.Features.Grid.Behaviours
             };
 
             Vector3 gridCenter = new Vector3(
-                (_currentSize.x - 1) * (_grid.cellSize.x + _currentCellGap) * 0.5f,
-                (_currentSize.y - 1) * (_grid.cellSize.y + _currentCellGap) * 0.5f,
+                (_currentSize.y - 1) * (_grid.cellSize.x + _currentCellGap) * 0.5f,
+                (_currentSize.x - 1) * (_grid.cellSize.y + _currentCellGap) * 0.5f,
                 0);
             
             _grid.transform.position = -gridCenter;
@@ -82,16 +95,20 @@ namespace Code.Gameplay.Features.Grid.Behaviours
                 {
                     GridElementConfig elementConfig = GetRandomConfig();
                     
-                    _currentLevelElementConfigs.Add(elementConfig);
                     _elementConfigs.Remove(elementConfig);
                     
-                    _factory.Create(_grid.transform, _grid.CellToWorld(new Vector3Int(i, j, 0)), elementConfig);
+                    _currentLevelElementConfigs.Add(_factory.Create(_grid.transform, _grid.CellToWorld(new Vector3Int(i, j, 0)), elementConfig));
                 }
             }
             
             _viewBehaviour.Init(_currentSize, _currentCellGap, _currentCellSize);
 
             return _currentLevelElementConfigs;
+        }
+
+        private void Restart()
+        {
+            _elementConfigs = _staticDataService.GetGridElementConfigs();
         }
 
         private GridElementConfig GetRandomConfig()

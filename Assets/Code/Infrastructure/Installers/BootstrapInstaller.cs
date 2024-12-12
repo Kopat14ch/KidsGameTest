@@ -1,4 +1,3 @@
-using Code.Gameplay.Cameras.Provider;
 using Code.Gameplay.Features.Grid.Factory;
 using Code.Gameplay.Features.Level.Services;
 using Code.Gameplay.StaticData;
@@ -12,16 +11,10 @@ namespace Code.Infrastructure.Installers
     {
         public override void InstallBindings()
         {
-            BindCamera();
             BindInfrastructure();
             BindCommon();
             BindGrid();
             BindLevel();
-        }
-
-        private void BindCamera()
-        {
-            Container.Bind<ICameraProvider>().To<CameraProvider>().AsSingle();
         }
         
         private void BindInfrastructure()
@@ -43,7 +36,7 @@ namespace Code.Infrastructure.Installers
 
         private void BindLevel()
         {
-            Container.Bind<ILevelService>().To<LevelService>().AsSingle();
+            Container.BindInterfacesTo<LevelService>().AsSingle();
         }
 
         public void Initialize()
